@@ -8,7 +8,7 @@ const server = http.createServer((req, res) => {
   }
 });
 
-server.on('connection', (Stream) => {
+server.on('connection', (stream) => {
   console.log('some one connected')
 });
 
