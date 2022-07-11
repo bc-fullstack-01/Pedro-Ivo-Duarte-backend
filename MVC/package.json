@@ -15,5 +15,8 @@
     "mongodb": "^4.7.0",
     "mongoose": "^6.4.4",
     "morgan": "~1.9.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.19.0"
   }
 }
