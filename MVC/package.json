@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "mongo:start": "docker run -d -p 27017:27017 mongo:latest",
     "start": "node ./bin/www"
   },
   "dependencies": {
@@ -11,6 +12,8 @@
     "ejs": "~2.6.1",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
+    "mongodb": "^4.7.0",
+    "mongoose": "^6.4.4",
     "morgan": "~1.9.1"
   }
 }
