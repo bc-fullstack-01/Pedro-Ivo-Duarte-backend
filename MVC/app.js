@@ -24,7 +24,7 @@ app.response.message = function (msg) {
   const sess = this.req.session
   // simply add the msg to an array for later
   sess.messages = sess.messages || []
-  sess.message.push(msg)
+  sess.messages.push(msg)
   return this
 }
 
@@ -39,7 +39,7 @@ app.use(methodOverride('_method'))
 app.use(express.static(path.join(__dirname, 'public')));
 // session suport
 app.use(session({
-  rease: false, // don't save session with unmodified
+  resave: false, // don't save session with unmodified
   saveUninitialized: false, // dont't create session until something
   secret: 'some secret here'
 }))
@@ -79,7 +79,7 @@ app.use(function (err, req, res, next) {
     // save form
     req.session.form = req.body
     // save errors
-    req.session.error = Object.entries(err).map(([, obj]) => obj)
+    req.session.errors = Object.entries(err).map(([, obj]) => obj)
     req.session.messages.push(err.message)
 
     res.redirect(lastView)
@@ -89,7 +89,7 @@ app.use(function (err, req, res, next) {
     })
   } else {
     // error page
-    res.status(err.status).render('5xx', { err })
+    res.status(err.status || 500).render('5xx', { err })
   }
 });
 
