@@ -32,7 +32,7 @@ nRouter
   .route('/:postId/comments')
   .all(CommentController.beforeAll)
   .get(CommentController.list)
-  post(CommentController.add)
+  .post(CommentController.add)
 nRouter
   .route('/postId/comments/new')
   .get(CommentController.new)
