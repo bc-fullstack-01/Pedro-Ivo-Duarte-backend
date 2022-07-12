@@ -32,19 +32,15 @@
     <% if (post.comments && post.comments.length) { %>
     <ul>
       <% post.comments && post.comments.forEach(({ _id, description })=> { %>
-      <form
-        action="/v1/posts/<%= post.id %>/comments/<%= _id %>?_method=delete"
-        method="POST"
-      >
+      <form action="/v1/posts/<%= post.id %>/comments/<%= _id %>?_method=delete" method="POST">
         <li>
-          <a href="<%= post.id %>/comments/<%= _id %>"> <%=description %> </a
-          ><input type="submit" value="del" />
+          <a href="<%= post.id %>/comments/<%= _id %>"> <%=description %> </a><input type="submit" value="del" />
         </li>
       </form>
       <% }) %>
     </ul>
     <% } else { %>
     <p>No comments!</p>
-    <% } %>
+    <% } %> <%= include('../footer') %>
   </body>
 </html>

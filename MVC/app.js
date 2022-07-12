@@ -6,7 +6,7 @@ const session = require('express-session');
 const logger = require('morgan');
 const createError = require('http-errors');
 
-const routes = require('./routes');
+const routes = require('./routers');
 
 // instaciate express
 const app = express();
@@ -19,7 +19,7 @@ app.set('view engine', 'ejs');
 
 // define a curstom res.message() method
 // which stores messages in the session
-app.response.message = function(msg) {
+app.response.message = function (msg) {
   // reference 'req.session' via the 'this.req' reference
   const sess = this.req.session
   // simply add the msg to an array for later
@@ -45,7 +45,7 @@ app.use(session({
 }))
 
 // take errors from session and clean
-app.use(function (req,res,next) {
+app.use(function (req, res, next) {
   // exposes "error" local variable
   res.locals = Object.assign(res.locals, req.session.form)
   res.locals.errors = Object.assign([], res.locals, req.session.errors)
@@ -65,19 +65,32 @@ app.get('/', (req, res) => res.redirect('/v1/posts')) // redirect home
 app.use('/v1', routes)
 
 // catch all and 404 since no middleware responded
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+// eslint-disable-next-line no-unused-vars
+app.use(function (err, req, res, next) {
+  // mongoose validator?
+  if (err.name && err.name === 'ValidationError') {
+    // retrive last view
+    const lastView = req.headers.referer.replace(`${req.headers.origin}/`, '/')
+    // save form
+    req.session.form = req.body
+    // save errors
+    req.session.error = Object.entries(err).map(([, obj]) => obj)
+    req.session.messages.push(err.message)
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+    res.redirect(lastView)
+  } else if ((err.status && err.status === 404) || (err.name && err.name === 'CastError')) {
+    res.status(404).render('404', {
+      url: req.originalUrl
+    })
+  } else {
+    // error page
+    res.status(err.status).render('5xx', { err })
+  }
 });
 
 module.exports = app;

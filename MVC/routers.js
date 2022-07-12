@@ -28,7 +28,7 @@ router
 const nRouter = express.Router();
 
 nRouter
-  .param('postId', CommentController.beforeById)
+  .param('postId', CommentController.beforeAllById)
   .route('/:postId/comments')
   .all(CommentController.beforeAll)
   .get(CommentController.list)

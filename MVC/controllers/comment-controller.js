@@ -15,6 +15,12 @@ module.exports = {
       next()
     })
     .catch(err => next(err)),
+  beforeById: (req, res, next) => Promise.resolve()
+  .then(() => Connection.then())
+  .then(() => {
+    next()
+  })
+  .catch(err => next(err)),
 
   list: (req, res, next) => Promise.resolve()
     .then(() => Comment.find({ post: res.locals.post.id }))
