@@ -53,7 +53,7 @@ app.use(function (req, res, next) {
   next()
   // empty or "flush" the error so they
   // don't build up
-  req.session = []
+  req.session.errors = []
   req.session.messages = []
   req.session.form = {}
 })

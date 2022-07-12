@@ -10,7 +10,7 @@ router
   .get(PostController.list)
   .post(PostController.add)
 router
-  .route('posts/new')
+  .route('/posts/new')
   .get(PostController.new)
 
 router
