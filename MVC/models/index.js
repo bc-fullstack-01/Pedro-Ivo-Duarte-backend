@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const connect = mongoose.connect('mongodb://locahost:27017/db');
+const connect = mongoose.connect('mongodb://locahost:27017/db_development');
 exports.Post = require('./post');
 exports.Comment = require('./comment')
 

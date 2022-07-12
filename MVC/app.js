@@ -7,7 +7,6 @@ const logger = require('morgan');
 const createError = require('http-errors');
 
 const routes = require('./routes');
-const res = require('express/lib/response');
 
 // instaciate express
 const app = express();
