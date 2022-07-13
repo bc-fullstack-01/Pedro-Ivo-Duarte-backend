@@ -4,11 +4,25 @@ const router = express.Router();
 
 router
   .route('/')
+  /**
+   * This function comment is parsed by doctrine
+   * @route GET /posts
+   * @group Post - api
+   * @return {Post} 200 - An array of user info
+   * @return {Error} default - Unexpected error
+   */
   .get((req, res, next) => Promise.resolve()
     .then(() => Post.find({}).populate('comments'))
     .then((data) => res.status(200).json(data))
     .catch(err => next(err)))
-
+  /**
+   * This function comment is parsed by doctrine
+   * @route POST /posts
+   * @param {Post.model} post.body.required - the new point
+   * @group Post - api
+   * @param {string} title.query.required - username or email
+   * @param {string} description.query.required - user's password.
+   */
   .post((req, res, next) => Promise.resolve()
     .then(() => new Post(req.body.post).save())
     .then((data) => res.status(201).json(data))
