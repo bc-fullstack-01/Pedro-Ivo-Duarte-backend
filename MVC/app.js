@@ -6,6 +6,7 @@ const session = require('express-session');
 const logger = require('morgan');
 const createError = require('http-errors');
 
+const { Connection } = require('./models')
 const routes = require('./routers');
 
 // instaciate express
@@ -59,6 +60,11 @@ app.use(function (req, res, next) {
 })
 // set logger
 app.use(logger(process.env.NODE_ENV || 'dev'));
+
+app.use((req, res, next) => Connection
+  .then(() => next())
+  .catch(err => next(err))
+)
 
 // add all routes on a prefix version
 app.get('/', (req, res) => res.redirect('/v1/posts')) // redirect home
