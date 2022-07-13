@@ -3,12 +3,12 @@ const { Post } = require('../models')
 
 exports.list = (req, res, next) => Promise.resolve()
   .then(() => Post.find({}))
-  .then((data) => {
-    res.render('posts/list', {
-      posts: data
-    })
-  })
+  .then((data) => (req.accepts(['html', 'json']) === 'json')
+    ? res.json(data)
+    : res.render('posts/list', { posts: data })
+  )
   .catch(err => next(err))
+
 
 exports.add = (req, res, next) => Promise.resolve()
   .then(() => new Post(req.body.post).save())
