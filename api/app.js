@@ -1,41 +1,70 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const createError = require('http-errors');
+const express = require('express');
+const logger = require('morgan');
+const helmet = require('helmet')
+const cors = require('cors')
+const esg = require('express-swagger-generator')
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const defaultOptions = require('./swagger.json')
+const { Post, Comment } = require('./routers')
+const { Connection } = require('./models')
 
-var app = express();
+const options = Object.assign(defaultOptions, { basedir: __dirname }) // app absolute path
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+// instanciate express
+const app = express();
+const expressSwagger = esg(app)
+expressSwagger(options)
 
-app.use(logger('dev'));
+app.use(cors())
+app.use(helmet())
+
+// middlewares configuration
+
+// encode url
+app.use(express.urlencoded({ extended: true }));
+
+// req.body parse to JSON 
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+// set logger
+app.use(logger(process.env.NODE_ENV || 'dev'));
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use((req, res, next) => Connection
+  .then(() => next())
+  .catch(err => next(err))
+)
+
+// add all routes on a prefix version
+Post.use('/', Comment)
+app.use('/v1/posts', Post)
+
+// catch all and 404 since no middleware responded
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+// eslint-disable-next-line no-unused-vars
+app.use(function (err, req, res, next) {
+  console.log(err)
+  // mongoose validator?
+  if (err.name && err.name === 'ValidationError') {
+    res.status(406).json(err)
+  } else if ((err.status && err.status === 404) || (err.name && err.name === 'CastError')) {
+    res.status(404).json({
+      url: req.originalUrl,
+      error: {
+        message: "Not found"
+      }
+    })
+  } else {
+    // error page
+    res.status(err.status || 500).json({
+      url: req.originalUrl,
+      error: err
+    })
+  }
 });
 
 module.exports = app;
