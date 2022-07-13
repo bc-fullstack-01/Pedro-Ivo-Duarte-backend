@@ -44,7 +44,7 @@ nRouter
   .delete(CommentController.delete)
 nRouter
   .param('id', CommentController.beforeById)
-  .route('/postId/comments/:id/edit')
+  .route('/:postId/comments/:id/edit')
   .get(CommentController.edit)
 
 router.use('/posts', nRouter);

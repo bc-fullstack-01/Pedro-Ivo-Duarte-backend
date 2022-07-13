@@ -40,7 +40,7 @@ module.exports = {
     )
     .then((data) => {
       res.message('add comment succes!')
-      res.redirect(`/vi/posts/${res.locals.post.id}/comments/${data._id}`)
+      res.redirect(`/v1/posts/${res.locals.post.id}/comments/${data._id}`)
     })
     .catch(err => next(err)),
 

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "mongo:start": "docker run -d -p 27017:27017 mongo:latest",
-    "start": "node ./bin/www"
+    "start": "nodemon ."
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -19,6 +19,7 @@
     "morgan": "~1.9.1"
   },
   "devDependencies": {
-    "eslint": "^8.19.0"
+    "eslint": "^8.19.0",
+    "nodemon": "^2.0.19"
   }
 }
