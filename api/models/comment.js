@@ -5,7 +5,7 @@ const { Schema, model } = require('mongoose');
  * @property {string} description.required - Some description for product
  * @property {Post} post.required
  */
-const commentSchema = {
+const commentSchema = new Schema ({
   description: {
     type: String,
     required: true,
@@ -15,6 +15,6 @@ const commentSchema = {
     type: Schema.Types.ObjectId,
     ref: 'Post'
   }
-}
+})
 
 module.exports = model('Comment', commentSchema)
