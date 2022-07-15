@@ -1,5 +1,4 @@
 const express = require('express');
-const comment = require('../../MVC/models/comment');
 const { Post, Comment } = require('../models');
 const router = express.Router();
 
@@ -40,7 +39,7 @@ router
 
   .delete((req, res, next) => Promise.resolve()
     .then(() => Comment.findById(req.params.id))
-    .then((comment) => Post.findByIdAndUpdate(comment.post), { $pull: { comments: comment._id } })
+    .then((comment) => Post.findByIdAndUpdate(comment.post, { $pull: { comments: comment._id } }))
     .then(() => Comment.findByIdAndDelete(req.params.id))
     .then((data) => res.status(200).json(data))
     .catch(err => next(err)))
