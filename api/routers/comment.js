@@ -10,11 +10,26 @@ router
     })
     .catch(err => next(err)))
   .route('/:postId/comments')
+/**
+ * This function get all comments of a post
+ * @route GET /posts/{postId}/comments
+ * @param {string} postId.path.required - postId
+ * @returns {Array<Comment>} 200 - An array of comments
+ * @returns {Error} default - Unexpected error
+ * @group Comment - api
+ */
   .get((req, res, next) => Promise.resolve()
     .then(() => Comment.find({ post: res.locals.post.id }).populate('post'))
     .then((data) => res.status(200).json(data))
     .catch(err => next(err)))
 
+/**This function add a comment to a post
+ * @route POST /posts/{postId}/comments
+ * @param {Comment.model} comment.body.required
+ * @param {string} postId.path.required
+ * @group Comment - api
+ * @returns {Comment.modal}
+ */
   .post((req, res, next) => Promise.resolve()
     .then(() => new Comment(Object.assign(req.body, { post: res.locals.post.id })).save())
     .then((comment) => Post.findById(comment.post)
@@ -31,7 +46,13 @@ router
     .then(() => Comment.findById(req.params.id))
     .then((data) => res.status(200).json(data))
     .catch(err => next(err)))
-
+/**
+ * @route PUT /posts/{postId}/comments/{id}
+ * @param {Comment.model} comment.body.required
+ * @param {string} postId.path.required
+ * @param {string} id.path.required
+ * @group Comment - api
+ */
   .put((req, res, next) => Promise.resolve()
     .then(() => Comment.findByIdAndUpdate(req.params.id, req.body, { runValidators: true }))
     .then((data) => res.status(200).json(data))

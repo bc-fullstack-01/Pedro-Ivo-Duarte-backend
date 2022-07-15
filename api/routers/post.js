@@ -6,24 +6,22 @@ const createError = require('http-errors')
 router
   .route('/')
   /**
-   * This function comment is parsed by doctrine
+   * This function get all posts
    * @route GET /posts
-   * @group Post - api
-   * @return {Post} 200 - An array of user info
+   * @return {Post} 200 - An array posts
    * @return {Error} default - Unexpected error
+   * @group Post - api
    */
   .get((req, res, next) => Promise.resolve()
     .then(() => Post.find({}).populate('comments'))
     .then((data) => res.status(200).json(data))
     .catch(err => next(err)))
   /**
-   * This function comment is parsed by doctrine
-   * djskdjskjdksjdksdj
+   * This function add a new post
    * @route POST /posts
-   * @param {Post.model} post.body.required - the new point
+   * @param {Post.model} post.body.required -
+   * @return {Error} default - Unexpected error
    * @group Post - api
-   * @param {string} title.query.required - Post title
-   * @param {string} description.query.required - description
    */
   .post((req, res, next) => Promise.resolve()
     .then(() => new Post(req.body).save())
@@ -32,16 +30,33 @@ router
 
 router
   .route('/:id')
+  /**
+   * This function get all comments of a post
+   * @route GET /posts/{id}
+   * @param {string} id.path.required - id
+   * @group Post - api
+   */
   .get((req, res, next) => Promise.resolve()
     .then(() => Post.findById(req.params.id).populate({ path: 'comments' }))
     .then((data) => data ? res.status(200).json(data) : next(createError(404)))
     .catch(err => next(err)))
-
+  /**
+   /** This function edits a post
+   * @route PUT /posts/{id}
+   * @param {string} id.path.required - id
+   * @param {Post.model} post.body.required - req.body
+   * @group Post - api
+  */
   .put((req, res, next) => Promise.resolve()
     .then(() => Post.findByIdAndUpdate(req.params.id, req.body, { runValidators: true }))
     .then((data) => res.status(203).json(data))
     .catch(err => next(err)))
-
+/**
+ * This function deletes a post
+ * @route delete /posts/{id}
+ * @param {string} id.path.required
+ * @group Post - api
+ */
   .delete((req, res, next) => Promise.resolve()
     .then(() => Post.findByIdAndDelete(req.params.id))
     .then(() => (Comment.deleteMany({ post: req.params.id })))
