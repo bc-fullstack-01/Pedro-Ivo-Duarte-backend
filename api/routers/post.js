@@ -18,6 +18,7 @@ router
     .catch(err => next(err)))
   /**
    * This function comment is parsed by doctrine
+   * djskdjskjdksjdksdj
    * @route POST /posts
    * @param {Post.model} post.body.required - the new point
    * @group Post - api
@@ -44,7 +45,7 @@ router
   .delete((req, res, next) => Promise.resolve()
     .then(() => Post.findByIdAndDelete(req.params.id))
     .then(() => (Comment.deleteMany({ post: req.params.id })))
-    .then(() => res.status(200).send({ message: "Post deleted with success!" }))
+    .then(() => res.status(203).json({ message: "Post deleted with success!" }))
     .catch(err => next(err))
   )
 
