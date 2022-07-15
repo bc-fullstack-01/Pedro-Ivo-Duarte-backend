@@ -50,7 +50,6 @@ app.use(function (err, req, res, next) {
   console.log(err)
   // mongoose validator?
   if (err.name && err.name === 'ValidationError') {
-    console.log('req.body', req.body)
     res.status(406).json(err)
   } else if ((err.status && err.status === 404) || (err.name && err.name === 'CastError')) {
     res.status(404).json({
