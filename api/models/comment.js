@@ -10,15 +10,19 @@ const commentSchema = new Schema ({
     required: true,
     minLength: 2
   },
-  user: {
+  profile: {
     type: Schema.Types.ObjectId,
-    required: true,
-    ref: 'User'
+    ref: 'Profile'
   },
   post: {
     type: Schema.Types.ObjectId,
+    required: true,
     ref: 'Post'
-  }
+  },
+  likes: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Profile'
+  }]
 })
 
 module.exports = model('Comment', commentSchema)

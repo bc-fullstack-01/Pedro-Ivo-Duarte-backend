@@ -2,16 +2,11 @@ const { model, Schema } = require('mongoose');
 /**
  * @typedef User
  * @property {string} __id
- * @property {string} name.required
  * @property {string} user.required
  * @property {string} password.required
+ * @property {Profile} profile - user profile
  */
 const userSchema = new Schema({
-  name: {
-    type: String,
-    required: true,
-    minLength: 2
-  },
   user: {
     type: String,
     unique: true,
@@ -23,10 +18,10 @@ const userSchema = new Schema({
     required: true,
     minLength: 2
   },
-  following: [{
+  profile: {
     type: Schema.Types.ObjectId,
-    ref: 'User'
-  }]
+    ref: 'Profile'
+  }
 })
 
 module.exports = model('User', userSchema)
