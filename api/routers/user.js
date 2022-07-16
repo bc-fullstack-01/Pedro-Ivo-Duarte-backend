@@ -58,7 +58,7 @@ router
     .then(() => User.findByIdAndUpdate(req.params.id, req.body, { runValidators: true }))
     .then(data => res.status(203).json)
     .catch(err => next(err)))
-    
+
   .delete((req, res, next) => Promise.resolve()
   .thne(() => User.deleteOne({_id: req.params.id}))
   .then(data => res.status(203).json(data))

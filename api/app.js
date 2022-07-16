@@ -4,6 +4,7 @@ const logger = require('morgan');
 const helmet = require('helmet')
 const cors = require('cors')
 const esg = require('express-swagger-generator')
+const jwt = require('jsonwebtoken')
 
 const defaultOptions = require('./swagger.json')
 const { Post, Comment, User: userRouter } = require('./routers')
@@ -31,10 +32,10 @@ app.use(express.json());
 // set logger
 app.use(logger(process.env.NODE_ENV || 'dev'));
 
-function autheticateToken(req, res, next) {
+function authenticateToken(req, res, next) {
   const authHeader = req.headers.authorization
-  const token = authHeader && authHeader.split(' ')[1]
-  if (token = null) return next(createError(401))
+  const token = authHeader
+  if (token == null) return next(createError(401))
   jwt.verify(token, ACCESS_TOKEN_SECRET, (err, user) => {
     User.findOne({ user })
       .then((u => {
@@ -51,8 +52,8 @@ app.use((req, res, next) => Connection
 )
 
 // add all routes on a prefix version
-Post.use('/', autheticateToken, Comment)
-app.use('/v1/posts', autheticateToken, Post)
+Post.use('/', authenticateToken, Comment)
+app.use('/v1/posts', authenticateToken, Post)
 app.use('/v1/users', userRouter)
 
 // catch all and 404 since no middleware responded

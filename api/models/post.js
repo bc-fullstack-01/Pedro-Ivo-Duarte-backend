@@ -1,6 +1,7 @@
 const { Schema, model } = require('mongoose')
 /**
  * @typedef Post
+ * @property {string} _id
  * @property {string} title.required
  * @property {string} description.required - Post content
  */

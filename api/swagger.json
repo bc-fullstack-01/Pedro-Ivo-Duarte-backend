@@ -10,7 +10,20 @@
     "produces": [
       "application/json"
     ],
-    "schemes": ["http"]
+    "schemes": [
+      "http"
+    ],
+    "securityDefinitions": {
+      "JWT": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Bearer<token>"
+      }
+    }
   },
-  "files": ["./routers/**/*.js", "./models/**/*.js"]
+  "files": [
+    "./routers/**/*.js",
+    "./models/**/*.js"
+  ]
 }
