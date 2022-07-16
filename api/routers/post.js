@@ -8,9 +8,10 @@ router
   /**
    * This function get all posts
    * @route GET /posts
-   * @return {Post} 200 - An array posts
+   * @return {Array.<Post>} 200 - An array posts
    * @return {Error} default - Unexpected error
    * @group Post - api
+   * @security JWT
    */
   .get((req, res, next) => Promise.resolve()
     .then(() => Post.find({}).populate('comments'))
@@ -20,8 +21,8 @@ router
    * This function add a new post
    * @route POST /posts
    * @param {Post.model} post.body.required -
-   * @return {Error} default - Unexpected error
    * @group Post - api
+   * @security JWT
    */
   .post((req, res, next) => Promise.resolve()
     .then(() => new Post(req.body).save())
@@ -35,6 +36,8 @@ router
    * @route GET /posts/{id}
    * @param {string} id.path.required - id
    * @group Post - api
+   * @returns {<Post>} 200 - post
+   * @security JWT
    */
   .get((req, res, next) => Promise.resolve()
     .then(() => Post.findById(req.params.id).populate({ path: 'comments' }))
@@ -51,12 +54,13 @@ router
     .then(() => Post.findByIdAndUpdate(req.params.id, req.body, { runValidators: true }))
     .then((data) => res.status(203).json(data))
     .catch(err => next(err)))
-/**
- * This function deletes a post
- * @route delete /posts/{id}
- * @param {string} id.path.required
- * @group Post - api
- */
+  /**
+   * This function deletes a post
+   * @route delete /posts/{id}
+   * @param {string} id.path.required
+   * @group Post - api
+   * @security JWT
+   */
   .delete((req, res, next) => Promise.resolve()
     .then(() => Post.findByIdAndDelete(req.params.id))
     .then(() => (Comment.deleteMany({ post: req.params.id })))

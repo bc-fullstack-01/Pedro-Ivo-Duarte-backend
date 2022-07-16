@@ -11,7 +11,7 @@ router
   /**
    * This function list the users
    * @route Get /users
-   * @groupd User - api
+   * @group User - api
    * @returns {User} 200 - An array of users
    * @returns {Error} default - unexpected error
    * @security JWT
@@ -35,6 +35,7 @@ router
  * This function ,ake the login
  * @route POST /users/login
  * @param {User.model} req.body.required - User credentials
+ * @group User - api
  */
 router
   .route('/login')

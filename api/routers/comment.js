@@ -17,6 +17,7 @@ router
  * @returns {Array<Comment>} 200 - An array of comments
  * @returns {Error} default - Unexpected error
  * @group Comment - api
+ * @security JWT
  */
   .get((req, res, next) => Promise.resolve()
     .then(() => Comment.find({ post: res.locals.post.id }).populate('post'))
@@ -25,10 +26,10 @@ router
 
 /**This function add a comment to a post
  * @route POST /posts/{postId}/comments
- * @param {Comment.model} comment.body.required
  * @param {string} postId.path.required
+ * @param {Comment.model} comment.body.required
  * @group Comment - api
- * @returns {Comment.modal}
+ * @security JWT
  */
   .post((req, res, next) => Promise.resolve()
     .then(() => new Comment(Object.assign(req.body, { post: res.locals.post.id })).save())
@@ -42,6 +43,13 @@ router
   )
 router
   .route('/:postId/comments/:id')
+  /**
+   * @route GET /posts/{postId}/comments/{id}
+   * @param {string} postId.path.required
+   * @param {string} id.path.required
+   * @group Comment - api
+   * @security JWT
+   */
   .get((req, res, next) => Promise.resolve()
     .then(() => Comment.findById(req.params.id))
     .then((data) => res.status(200).json(data))
@@ -52,12 +60,20 @@ router
  * @param {string} postId.path.required
  * @param {string} id.path.required
  * @group Comment - api
+ * @security JWT
  */
   .put((req, res, next) => Promise.resolve()
     .then(() => Comment.findByIdAndUpdate(req.params.id, req.body, { runValidators: true }))
     .then((data) => res.status(200).json(data))
     .catch(err => next(err)))
-
+/**
+ * this function deletes a comment by id
+ * @route DELETE /posts/{postId}/comments/{id}
+ * @param {string} postId.path.required - Post id
+ * @param {string} id.path.required - Comment id
+ * @group Comment - api
+ * @security JWT
+ */
   .delete((req, res, next) => Promise.resolve()
     .then(() => Comment.findById(req.params.id))
     .then((comment) => Post.findByIdAndUpdate(comment.post, { $pull: { comments: comment._id } }))
