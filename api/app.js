@@ -34,7 +34,7 @@ app.use(logger(process.env.NODE_ENV || 'dev'));
 
 function authenticateToken(req, res, next) {
   const authHeader = req.headers.authorization
-  const token = authHeader
+  const token = authHeader && authHeader.split(' ')[1]
   if (token == null) return next(createError(401))
   jwt.verify(token, ACCESS_TOKEN_SECRET, (err, user) => {
     if (err) return next(createError(403))
@@ -65,7 +65,6 @@ app.use(function (req, res, next) {
 // error handler
 // eslint-disable-next-line no-unused-vars
 app.use(function (err, req, res, next) {
-  console.log(err)
   // mongoose validator?
   if (err.name && err.name === 'ValidationError') {
     res.status(406).json(err)
@@ -76,7 +75,15 @@ app.use(function (err, req, res, next) {
         message: "Not found"
       }
     })
-  } else {
+  } else if (err.code === 11000) {
+    res.status(500).json({
+      url: req.originalUrl,
+      error: {
+        message: 'Duplicate key not allowed'
+      }
+    })
+  } 
+  else {
     // error page
     res.status(err.status || 500).json({
       url: req.originalUrl,
