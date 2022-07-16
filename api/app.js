@@ -6,10 +6,11 @@ const cors = require('cors')
 const esg = require('express-swagger-generator')
 
 const defaultOptions = require('./swagger.json')
-const { Post, Comment } = require('./routers')
-const { Connection } = require('./models')
+const { Post, Comment, User: userRouter } = require('./routers')
+const { Connection, User } = require('./models')
 
 const options = Object.assign(defaultOptions, { basedir: __dirname }) // app absolute path
+const ACCESS_TOKEN_SECRET = 'black-magic'
 
 // instanciate express
 const app = express();
@@ -30,14 +31,29 @@ app.use(express.json());
 // set logger
 app.use(logger(process.env.NODE_ENV || 'dev'));
 
+function autheticateToken(req, res, next) {
+  const authHeader = req.headers.authorization
+  const token = authHeader && authHeader.split(' ')[1]
+  if (token = null) return next(createError(401))
+  jwt.verify(token, ACCESS_TOKEN_SECRET, (err, user) => {
+    User.findOne({ user })
+      .then((u => {
+        req.user = u
+        next()
+      }))
+  })
+
+}
+
 app.use((req, res, next) => Connection
   .then(() => next())
   .catch(err => next(err))
 )
 
 // add all routes on a prefix version
-Post.use('/', Comment)
-app.use('/v1/posts', Post)
+Post.use('/', autheticateToken, Comment)
+app.use('/v1/posts', autheticateToken, Post)
+app.use('/v1/users', userRouter)
 
 // catch all and 404 since no middleware responded
 app.use(function (req, res, next) {

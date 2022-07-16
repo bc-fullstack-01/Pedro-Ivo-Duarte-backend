@@ -1,4 +1,4 @@
-const {Screma, model, Schema} = require('mongoose');
+const { model, Schema } = require('mongoose');
 /**
  * @typedef User
  * @property {string} __id
@@ -6,7 +6,7 @@ const {Screma, model, Schema} = require('mongoose');
  * @property {string} user.required
  * @property {string} password.required
  */
-const postSchema = new Schema({
+const userSchema = new Schema({
   name: {
     type: String,
     required: true,
@@ -28,3 +28,5 @@ const postSchema = new Schema({
     ref: 'User'
   }]
 })
+
+module.exports = model('User', userSchema)

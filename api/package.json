@@ -6,6 +6,7 @@
     "start": "nodemon ."
   },
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "debug": "~2.6.9",
     "ejs": "~2.6.1",
@@ -13,6 +14,7 @@
     "express-swagger-generator": "^1.1.17",
     "helmet": "^5.1.0",
     "http-errors": "~1.6.3",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.4.4",
     "morgan": "~1.9.1"
   },

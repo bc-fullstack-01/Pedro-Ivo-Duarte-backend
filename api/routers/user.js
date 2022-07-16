@@ -45,4 +45,6 @@ router
     .then((accessToken) => res.status(201).json({ accessToken }))
     .catch(err => next(err)))
 
+module.exports = router;
+
 
