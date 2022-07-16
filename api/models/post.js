@@ -2,7 +2,7 @@ const { Schema, model } = require('mongoose')
 /**
  * @typedef Post
  * @property {string} title.required
- * @property {string} description.required - Some description for product
+ * @property {string} description.required - Post content
  */
 const postSchema = new Schema({
   title: {
@@ -14,6 +14,10 @@ const postSchema = new Schema({
     type: String,
     required: true,
     minLength: 2
+  },
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
   },
   comments: [{
     type: Schema.Types.ObjectId,
