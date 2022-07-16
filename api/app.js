@@ -37,6 +37,7 @@ function authenticateToken(req, res, next) {
   const token = authHeader
   if (token == null) return next(createError(401))
   jwt.verify(token, ACCESS_TOKEN_SECRET, (err, user) => {
+    if (err) return next(createError(403))
     User.findOne({ user })
       .then((u => {
         req.user = u

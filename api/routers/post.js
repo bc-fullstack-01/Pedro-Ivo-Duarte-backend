@@ -14,7 +14,7 @@ router
    * @security JWT
    */
   .get((req, res, next) => Promise.resolve()
-    .then(() => Post.find({}).populate('comments'))
+    .then(() => Post.find({user: req.user._id}).populate('comments'))
     .then((data) => res.status(200).json(data))
     .catch(err => next(err)))
   /**
@@ -25,7 +25,7 @@ router
    * @security JWT
    */
   .post((req, res, next) => Promise.resolve()
-    .then(() => new Post(req.body).save())
+    .then(() => new Post({...req.body, user: req.user._id}).save())
     .then((data) => res.status(201).json(data))
     .catch(err => next(err)))
 

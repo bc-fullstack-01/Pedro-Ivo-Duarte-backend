@@ -3,7 +3,6 @@ const { Schema, model } = require('mongoose');
  * @typedef Comment
  * @property {string} _id
  * @property {string} description.required - Some description for product
- * @property {Post} post.required
  */
 const commentSchema = new Schema ({
   description: {
