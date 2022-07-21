@@ -43,6 +43,8 @@ function authenticateToken(req, res, next) {
         req.user = u
         next()
       }))
+      .catch(err => next(err))
+      
   })
 
 }

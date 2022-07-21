@@ -4,6 +4,8 @@ const { Schema, model } = require('mongoose')
  * @property {string} _id
  * @property {string} title.required
  * @property {string} description.required - Post content
+ * @property {Profile} profile.required - profile
+ * @property {Array.<Comments>} comments - comments
  */
 const postSchema = new Schema({
   title: {
