@@ -70,5 +70,18 @@ router
     .then(() => res.status(203).json({ message: "Post deleted with success!" }))
     .catch(err => next(err))
   )
+router
+  .route('/:id/like')
+  /**
+   * @route POST /posts/{id}/like
+   * @param {string} id.path.required
+   * @group Post - api
+   * @security JWT
+   */
+  .post((req, res, next) => Promise.resolve()
+    .then(() => Post.findOneAndUpdate({ _id: req.params.id }, { $push: { likes: req.user.profile._id } }))
+    .then((data) => res.status(200).json(data))
+    .catch(err => next(err)))
 
 module.exports = router
+
