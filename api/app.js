@@ -7,7 +7,7 @@ const esg = require('express-swagger-generator')
 const jwt = require('jsonwebtoken')
 
 const defaultOptions = require('./swagger.json')
-const { Post, Comment, User: userRouter } = require('./routers')
+const { Post, Comment, User: userRouter, Security, Profile } = require('./routers')
 const { Connection, User } = require('./models')
 
 const options = Object.assign(defaultOptions, { basedir: __dirname }) // app absolute path
@@ -38,13 +38,13 @@ function authenticateToken(req, res, next) {
   if (token == null) return next(createError(401))
   jwt.verify(token, ACCESS_TOKEN_SECRET, (err, user) => {
     if (err) return next(createError(403))
-    User.findOne({ user })
+    User.findOne(user).populate('profile')
       .then((u => {
         req.user = u
         next()
       }))
       .catch(err => next(err))
-      
+
   })
 
 }
@@ -57,7 +57,9 @@ app.use((req, res, next) => Connection
 // add all routes on a prefix version
 Post.use('/', authenticateToken, Comment)
 app.use('/v1/posts', authenticateToken, Post)
-app.use('/v1/users', userRouter)
+app.use('/v1/users', authenticateToken, userRouter)
+app.use('/v1/profiles', authenticateToken, Profile)
+app.use('/v1/security', Security)
 
 // catch all and 404 since no middleware responded
 app.use(function (req, res, next) {
@@ -84,7 +86,7 @@ app.use(function (err, req, res, next) {
         message: 'Duplicate key not allowed'
       }
     })
-  } 
+  }
   else {
     // error page
     res.status(err.status || 500).json({

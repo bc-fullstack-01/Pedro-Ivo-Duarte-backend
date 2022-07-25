@@ -20,15 +20,15 @@ router
   .route('/search')
   /**
    * This function search fot a profile based on query string
-   * @route GET /profiles/seatch?q={q}
-   * @param {string} q.query.required - profile id
+   * @route GET /profiles/search?q={q}
+   * @param {string} q.query.required - query
    * @group Profile - api
    * @returns {Profile} 200 - profile
    * @security JWT
    */
   .get((req, res, next) => Promise.resolve()
     .then(() => Profile.find({ $text: { $search: `${req.query.q}` } }, { score: { $meta: 'textScore' } }).sort({ score: { $meta: 'textScore' } }))
-    .then((data) => data ? res.stauts(200).json(data) : next(createError(404)))
+    .then((data) => data ? res.status(200).json(data) : next(createError(404)))
     .catch(err => next(err)))
 
 router
@@ -41,9 +41,9 @@ router
    * @returns {Profile} 200 - Profile
    * @security JWT
    */
-  .get((req, res, next) => Profile.resolve()
+  .get((req, res, next) => Promise.resolve()
     .then(() => Profile.findById(req.params.id).populate(['following', 'followers']))
-    .then((data) => data ? res.status(200).json(data) : next(createError404))
+    .then((data) => data ? res.status(200).json(data) : next(createError(404)))
     .catch(err => next(err)))
 
 router

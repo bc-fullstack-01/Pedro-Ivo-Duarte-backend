@@ -1,7 +1,7 @@
 const { model, Schema } = require('mongoose');
 /**
  * @typedef User
- * @property {string} __id
+ * @property {string} _id
  * @property {string} user.required
  * @property {string} password.required
  * @property {Profile} profile - user profile
