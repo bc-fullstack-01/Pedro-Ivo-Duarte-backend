@@ -7,7 +7,7 @@ const esg = require('express-swagger-generator')
 const jwt = require('jsonwebtoken')
 
 const defaultOptions = require('./swagger.json')
-const { Post, Comment, User: userRouter, Security, Profile } = require('./routers')
+const { Post, Comment, User: userRouter, Security, Profile, Feed } = require('./routers')
 const { Connection, User } = require('./models')
 
 const options = Object.assign(defaultOptions, { basedir: __dirname }) // app absolute path
@@ -59,6 +59,7 @@ Post.use('/', authenticateToken, Comment)
 app.use('/v1/posts', authenticateToken, Post)
 app.use('/v1/users', authenticateToken, userRouter)
 app.use('/v1/profiles', authenticateToken, Profile)
+app.use('/v1/feed', authenticateToken, Feed)
 app.use('/v1/security', Security)
 
 // catch all and 404 since no middleware responded
