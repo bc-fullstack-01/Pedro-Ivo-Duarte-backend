@@ -81,4 +81,19 @@ router
     .then((data) => res.status(200).json(data))
     .catch(err => next(err)))
 
+router
+  .route('/:postId/comments/:id/like')
+  /**
+   * This function likes a comment
+   * @route POST /posts/{postId}/comments/{id}/like
+   * @param {string} postId.path.required - Post id
+   * @param {string} id.path.required - Comment id
+   * @group Comment - api
+   * @security JWT
+   */
+  .post((req, res, next) => Promise.resolve()
+    .then(() => Comment.findOneAndUpdate({ _id: req.params.id }, { $push: { likes: req.user.profile._id } }))
+    .then((data) => res.status(200).json(data))
+    .catch(err => next(err)))
+
 module.exports = router
