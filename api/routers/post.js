@@ -14,7 +14,7 @@ router
    * @security JWT
    */
   .get((req, res, next) => Promise.resolve()
-    .then(() => Post.find({ profile: req.user.profile._id }))
+    .then(() => Post.find({ profile: req.user.profile._id }).populate('comments').populate('profile'))
     .then((data) => {
       res.status(200).json(data)
     })
