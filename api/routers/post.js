@@ -80,7 +80,7 @@ router
    */
   .post((req, res, next) => Promise.resolve()
     .then(() => Post.findOneAndUpdate({ _id: req.params.id }, { $push: { likes: req.user.profile._id } }))
-    .then((data) => res.status(200).json(data))
+    .then((data) => data ? res.status(200).json(data) : next(createError(404)))
     .catch(err => next(err)))
 
 module.exports = router
