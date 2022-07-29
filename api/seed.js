@@ -38,5 +38,5 @@ Connection
     .then(([profile1, profile2]) => follow(profile1, profile2).then(() => ([profile1, profile2])))
     .then(([profile1, profile2]) => Promise.all([createPost(profile1), createPost(profile2)])))
   .then(() => console.log('mongo is seeded with success!'))
-  .then(() => process.exit(0))
+  // .then(() => process.exit(0))
   .catch((err) => console.error(err));

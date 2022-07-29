@@ -28,6 +28,7 @@ router
    */
   .post((req, res, next) => Promise.resolve()
     .then(() => new Post({ ...req.body, profile: req.user.profile._id }).save())
+    .then((args) => req.publish('post', req.user.profile.followers, args))
     .then((data) => res.status(201).json(data))
     .catch(err => next(err)))
 
@@ -73,14 +74,16 @@ router
 router
   .route('/:id/like')
   /**
-   * @route POST /posts/{id}/like
-   * @param {string} id.path.required
-   * @group Post - api
-   * @security JWT
-   */
+    * This function deletes a post
+    * @route POST /posts/{id}/like
+    * @param {string} id.path.required
+    * @group Post - api
+    * @security JWT
+    */
   .post((req, res, next) => Promise.resolve()
     .then(() => Post.findOneAndUpdate({ _id: req.params.id }, { $push: { likes: req.user.profile._id } }))
-    .then((data) => data ? res.status(200).json(data) : next(createError(404)))
+    .then((args) => req.publish('post-like', [args.profile], args))
+    .then((data) => data ? res.status(203).json(data) : next(createError(404)))
     .catch(err => next(err)))
 
 module.exports = router

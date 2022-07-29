@@ -4,12 +4,25 @@ const router = require('express').Router()
 const { User, Profile } = require('../models')
 const ACCESS_TOKEN_SECRET = 'black-magic'
 
+/**
+ * @typedef Login
+ * @property {string} user.required
+ * @property {string} password.required
+ */
+
+/**
+ * @typedef Register
+ * @property {string} name
+ * @property {string} user.required
+ * @property {string} password.required
+ */
+
 router
   .route('/register')
   /**
    * This function creates a users
    * @route POST /security/register
-   * @param {User.model} post.body.required - the new user
+   * @param {Register.model} post.body.required - the new user
    * @group Security - api
    */
   .post((req, res, next) => Promise.resolve()
@@ -25,7 +38,7 @@ router
   /**
    * This function handle the login
    * @route POST /security/login
-   * @param {User.model} req.body.required - User credentials
+   * @param {Login.model} req.body.required - User credentials
    * @group Security - api
    */
   .post((req, res, next) => Promise.resolve()

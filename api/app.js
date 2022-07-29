@@ -1,3 +1,4 @@
+const path = require('path')
 const createError = require('http-errors');
 const express = require('express');
 const logger = require('morgan');
@@ -9,6 +10,7 @@ const jwt = require('jsonwebtoken')
 const defaultOptions = require('./swagger.json')
 const { Post, Comment, User: userRouter, Security, Profile, Feed } = require('./routers')
 const { Connection, User } = require('./models')
+const pubsub = require('./pubsub')
 
 const options = Object.assign(defaultOptions, { basedir: __dirname }) // app absolute path
 const ACCESS_TOKEN_SECRET = 'black-magic'
@@ -19,7 +21,7 @@ const expressSwagger = esg(app)
 expressSwagger(options)
 
 app.use(cors())
-app.use(helmet())
+// app.use(helmet())
 
 // middlewares configuration
 
@@ -53,6 +55,9 @@ app.use((req, res, next) => Connection
   .then(() => next())
   .catch(err => next(err))
 )
+app.use(express.static(path.join(__dirname, 'public')))
+
+app.use(pubsub.pub)
 
 // add all routes on a prefix version
 Post.use('/', authenticateToken, Comment)
@@ -61,6 +66,10 @@ app.use('/v1/users', authenticateToken, userRouter)
 app.use('/v1/profiles', authenticateToken, Profile)
 app.use('/v1/feed', authenticateToken, Feed)
 app.use('/v1/security', Security)
+
+app.get('/v1/seed', (req, res) => {
+  require('./seed')
+})
 
 // catch all and 404 since no middleware responded
 app.use(function (req, res, next) {
