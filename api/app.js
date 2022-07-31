@@ -10,10 +10,10 @@ const jwt = require('jsonwebtoken')
 const defaultOptions = require('./swagger.json')
 const { Post, Comment, User: userRouter, Security, Profile, Feed } = require('./routers')
 const { Connection, User } = require('./models')
-const pubsub = require('./pubsub')
+const pubsub = require('./lib/pubsub')
 
 const options = Object.assign(defaultOptions, { basedir: __dirname }) // app absolute path
-const ACCESS_TOKEN_SECRET = 'black-magic'
+const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || 'black-magic'
 
 // instanciate express
 const app = express();
@@ -26,8 +26,8 @@ app.use(cors())
 // middlewares configuration
 
 // encode url
-app.use(express.urlencoded({ extended: true }));
-
+const urlencodedMiddleware = express.urlencoded({ extended: true })
+app.use((req, res, next) => (/^multipart\//i.test(req.get('Content-Type'))) ? next() : urlencodedMiddleware(req, res, next))
 // req.body parse to JSON 
 app.use(express.json());
 
@@ -55,6 +55,7 @@ app.use((req, res, next) => Connection
   .then(() => next())
   .catch(err => next(err))
 )
+
 app.use(express.static(path.join(__dirname, 'public')))
 
 app.use(pubsub.pub)
@@ -69,6 +70,7 @@ app.use('/v1/security', Security)
 
 app.get('/v1/seed', (req, res) => {
   require('./seed')
+  res.status(200).end()
 })
 
 // catch all and 404 since no middleware responded
