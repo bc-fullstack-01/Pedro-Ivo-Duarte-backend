@@ -17,8 +17,8 @@ const config = {
   sslEnabled: false,
   signatureVersion: 'v4',
   credentials: {
-    accessKeyId: process.env.BUCKET_ACCESS_KEY || 'VSWDD9DDdUmpHF8h',
-    secretAccessKey: process.env.BUCKET_SECRET_KEY || '9KzvV0tRJ4jWx4d7Jf2wy2oLusH6M3R5'
+    accessKeyId: process.env.BUCKET_ACCESS_KEY || 'peter-ivo-minio-root',
+    secretAccessKey: process.env.BUCKET_SECRET_KEY || 'peter-ivo-minio-pass'
   }
 }
 
