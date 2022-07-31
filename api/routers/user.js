@@ -2,7 +2,6 @@ const createError = require('http-errors');
 const express = require('express');
 const router = express.Router()
 const { User } = require('../models')
-const ACCESS_TOKEN_SECRET = 'black-magic'
 
 router
   .route('/me')
