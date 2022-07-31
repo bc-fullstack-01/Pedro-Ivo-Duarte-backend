@@ -25,6 +25,6 @@ const commentSchema = new Schema ({
     type: Schema.Types.ObjectId,
     ref: 'Profile'
   }]
-})
+}, { timestamps: true })
 
 module.exports = model('Comment', commentSchema)

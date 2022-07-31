@@ -24,6 +24,6 @@ const profileSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Profile'
   }]
-})
+}, { timestamps: true })
 profileSchema.index({name: 'text'})
 module.exports = model('Profile', profileSchema)
