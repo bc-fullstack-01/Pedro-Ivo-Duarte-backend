@@ -1,7 +1,9 @@
-const express = require('express');
-const { Post, Comment } = require('../models');
-const router = express.Router();
 const createError = require('http-errors')
+const express = require('express');
+const router = express.Router();
+const upload = require('../lib/upload')
+
+const { Post, Comment } = require('../models');
 
 router
   .route('/')
@@ -26,11 +28,11 @@ router
    * @group Post - api
    * @security JWT
    */
-  .post((req, res, next) => Promise.resolve()
+  .post(upload.concat([(req, res, next) => Promise.resolve()
     .then(() => new Post({ ...req.body, profile: req.user.profile._id }).save())
     .then((args) => req.publish('post', req.user.profile.followers, args))
     .then((data) => res.status(201).json(data))
-    .catch(err => next(err)))
+    .catch(err => next(err))]))
 
 router
   .route('/:id')
