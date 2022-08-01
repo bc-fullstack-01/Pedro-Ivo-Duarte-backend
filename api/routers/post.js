@@ -83,9 +83,25 @@ router
     * @security JWT
     */
   .post((req, res, next) => Promise.resolve()
-    .then(() => Post.findOneAndUpdate({ _id: req.params.id }, { $push: { likes: req.user.profile._id } }))
+    .then(() => Post.findOneAndUpdate({ _id: req.params.id }, { $addToSet: { likes: req.user.profile._id } }))
     .then((args) => req.publish('post-like', [args.profile], args))
     .then((data) => data ? res.status(203).json(data) : next(createError(404)))
+    .catch(err => next(err)))
+
+router
+  .route('/:id/unlike')
+  /**
+   * This function unlike a post
+   * @route POST /posts/{id}/unlike
+   * @param {string} id.path.required
+   * @returns {Post} 203 - a Post
+   * @group Post - api
+   * @security JWT
+   */
+  .post((req, res, next) => Promise.resolve()
+    .then(() => Post.findOneAndUpdate({ _id: req.params.id }, { $pull: { likes: req.user.profile._id } }))
+    .then(args => req.publish('post-unlike', [args.profile], args))
+    .then(data => res.status(203).json(data))
     .catch(err => next(err)))
 
 module.exports = router

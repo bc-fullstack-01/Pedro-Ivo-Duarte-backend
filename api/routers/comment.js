@@ -32,7 +32,7 @@ router
    * @security JWT
    */
   .post((req, res, next) => Promise.resolve()
-    .then(() => new Comment(Object.assign(req.body, { post: res.locals.post.id, user: req.user._id })).save())
+    .then(() => new Comment(Object.assign(req.body, { post: res.locals.post.id, profile: req.user.profile._id })).save())
     .then((comment) => Post.findById(comment.post)
       .then(post => Object.assign(post, { comments: [...post.comments, comment._id] }))
       .then(post => Post.findByIdAndUpdate(comment.post, post))
@@ -93,9 +93,25 @@ router
    * @security JWT
    */
   .post((req, res, next) => Promise.resolve()
-    .then(() => Comment.findOneAndUpdate({ _id: req.params.id }, { $push: { likes: req.user.profile._id } }))
+    .then(() => Comment.findOneAndUpdate({ _id: req.params.id }, { $addToSet: { likes: req.user.profile._id } }))
     .then(args => req.publish('comment-like', [args.profile], args))
     .then((data) => res.status(203).json(data))
+    .catch(err => next(err)))
+
+router
+  .route('/:postId/comments/:id/unlike')
+  /**
+   * This function unlikes a comment
+   * @route POST /posts/{postId}/comments/{id}/unlike
+   * @param {string} postId
+   * @param {string} id
+   * @group Comment - api
+   * @security JWT
+   */
+  .post((req, res, next) => Promise.resolve()
+    .then(() => Comment.findOneAndUpdate({ _id: req.params.id }, { $pull: { likes: req.user.profile._id } }))
+    .then((args) => req.publish('comment-unlike', [args.profile], args))
+    .then(data => res.status(203).json(data))
     .catch(err => next(err)))
 
 module.exports = router
