@@ -68,7 +68,7 @@ services:
       BUCKET_HOST: http://localhost:9000/
       BUCKET_ENDPOINT: http://minio:9000/
       BUCKET_ACCESS_KEY: peter-ivo-minio-root
-      BUCKET_SECRET_KEY: peter-ivo-minio-root
+      BUCKET_SECRET_KEY: peter-ivo-minio-pass
     ports:
       - 4000:4000
     networks:
