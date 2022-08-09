@@ -56,8 +56,8 @@ router
    * @security JWT
    */
   .post((req, res, next) => Promise.resolve()
-    .then(() => Profile.findOneAndUpdate({ _id: req.params.id }, { $push: { followers: req.user.profile._id } }))
-    .then(() => Profile.findOneAndUpdate({ _id: req.user.profile._id }, { $push: { following: req.params.id } }))
+    .then(() => Profile.findOneAndUpdate({ _id: req.params.id }, { $addToSet: { followers: req.user.profile._id } }))
+    .then(() => Profile.findOneAndUpdate({ _id: req.user.profile._id }, { $addToSet: { following: req.params.id } }))
     .then((data) => res.status(203).json(data))
     .catch(err => next(err)))
 
