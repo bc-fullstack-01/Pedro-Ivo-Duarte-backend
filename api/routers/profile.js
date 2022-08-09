@@ -61,4 +61,19 @@ router
     .then((data) => res.status(203).json(data))
     .catch(err => next(err)))
 
+router
+  .route('/:id/unfollow')
+  /**
+   * This function unfollow a profile
+   * @route POST /profiles/{id}/unfollow
+   * @param {string} id.path.required
+   * @group Profile - api
+   * @security JWT
+   */
+  .post((req, res, next) => Promise.resolve()
+    .then(() => Profile.findByIdAndUpdate({ _id: req.params.id }, { $pull: { followers: req.user.profile._id } }))
+    .then(() => Profile.findByIdAndUpdate({ _id: req.user.profile._id }, { $pull: { following: req.params.id } }))
+    .then((data) => res.status(203).json(data))
+    .catch(err => next(err)))
+
 module.exports = router
