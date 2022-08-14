@@ -1,4 +1,5 @@
 const createError = require('http-errors');
+const bcrypt = require('bcrypt')
 const express = require('express');
 const router = express.Router()
 const { User } = require('../models')
@@ -27,7 +28,8 @@ router
    * @security JWT
    */
   .put((req, res, next) => Promise.resolve()
-    .then(() => User.findByIdAndUpdate(req.user._id, req.body, { runValidators: true }))
+    .then(() => bcrypt.hash(req.body.password, 10))
+    .then((hashedPass) => User.findByIdAndUpdate(req.user._id, { password: hashedPass }, { runValidators: true }))
     .then(data => res.status(203).json(data))
     .catch(err => next(err)))
   /**
